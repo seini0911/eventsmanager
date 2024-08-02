@@ -14,20 +14,20 @@ class EventController extends Controller
     }
 
     public function store(Request $request){
-
+        return response()->json(['message'=>'storing a new event']);
     }
 
     public function show($id){
-
+        return response()->json(['message'=>'showing an event']);
     }
 
 
     public function update(Request $request, $id){
-
+        return response()->json(['message'=>'updating an event']);
     }
 
     public function destroy($id){
-
+        return response()->json(['message'=>'deleting an event']);
     }
 
 }

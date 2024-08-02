@@ -2,16 +2,17 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Http\Requests\BadRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserRegistrationRequest extends FormRequest
+class UserRegistrationRequest extends BadRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +24,8 @@ class UserRegistrationRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:3|max:255',
-            'phone'=> 'required|min:8|max:20|unique:users',
-            'email'=> 'required|email|string|max:255|unique:users',
+            'phone'=> 'required|string|min:8|max:20|unique:users',
+            'email'=> 'required|email|string|string|max:255|unique:users',
             'password'=>'required|string|min:8|confirmed',
         ];
     }

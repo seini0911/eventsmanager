@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserLoginRequest extends FormRequest
+class BadRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,9 +23,18 @@ class UserLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email'=> 'string|min:8|max:255',
-            'phone'=> 'string|min:8|max:20',
-            'password'=>'required|string|min:8',
+            //
         ];
     }
+
+
+    public function failedValidation(Validator $validator){
+        return [
+            'success'=> false,
+            'message'=>'Validation errors',
+            'errors'=> $validator->errors(),
+        ];
+    }
+
+
 }
