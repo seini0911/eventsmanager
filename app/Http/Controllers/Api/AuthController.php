@@ -7,14 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\UserLoginRequest;
 use App\Http\Requests\Api\UserRegistrationRequest;
 use App\Models\User;
+use App\Responses\Api\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-
-
     /**
      *
      * Register a new user
@@ -25,16 +24,12 @@ class AuthController extends Controller
        $request->validated();
        try{
             $user  = User::create([
-                'name'=> $request->name,
-                'phone'=> $request->phone,
-                'email'=> $request->email,
+                'name'=> trim($request->name),
+                'phone'=> trim($request->phone),
+                'email'=> trim($request->email),
                 'password'=> bcrypt($request->password)
             ]);
-            return response()->json([
-                'success'=> true,
-                'message'=>'Registration done successfully.',
-                'data'=> $user
-            ] ,201);
+            return ApiResponse::success($user,'Registration done successfully.', 201);
 
        }catch(Exception $e){
             return ApiExceptions::handle($e);
@@ -49,35 +44,22 @@ class AuthController extends Controller
     public function login(UserLoginRequest $request){
         $request->validated();
         try{
-            $token = JWTAuth::attempt(['email' => $request->email, 'password' => $request->password]);
+            $token = JWTAuth::attempt(['email' => trim($request->email), 'password' => trim($request->password)]);
             if(!$token){
-                return response()->json([
-                    'success'=>false,
-                    'message' => 'Unauthorized',
-                ], 401);
+                return ApiResponse::error('Unauthorized.', 401);
             }
-
-            return response()->json([
-                'success'=>true,
-                'message'=>'Login successfull',
-                'token'=> $token
-            ]);
+            return ApiResponse::success($token,'Login successfull.');
         }catch(Exception $e){
             return ApiExceptions::handle($e);
         }
     }
-
     /**
      * Get the authenticated user
      * @param \Illuminate\Http\Request $request
      * @return mixed|\Illuminate\Http\JsonResponse
-     *
-     *
      */
     public function profile(Request $request){
-        return response()->json([
-            $request->user()
-        ]);
+        return ApiResponse::success($request->user());
     }
 
     /**
@@ -86,11 +68,12 @@ class AuthController extends Controller
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function logout(){
-        JWTAuth::invalidate(JWTAuth::getToken());
-        return response()->json([
-            'success'=> true,
-            'message'=>'Successfully logged out.'
-        ]);
+        try{
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return ApiResponse::success(null,'Logout successfully.');
+        }catch(Exception $e){
+            return ApiExceptions::handle($e);
+        }
     }
 
 

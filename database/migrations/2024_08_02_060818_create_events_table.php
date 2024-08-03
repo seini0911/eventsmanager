@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('description');
-            $table->dateTime('date_time');
-            $table->string('location');
-            $table->integer('capacity')->nullable();
-            $table->string('cover_image')->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('name'); //title to give to the event
+            $table->string('description'); //description of the event
+            $table->dateTime('date_time'); //date of the event
+            $table->string('location'); //location of the event
+            $table->integer('capacity')->nullable(); //maximum number of people allowed to participate to the event
+            $table->string('cover_image')->nullable(); //cover image of the event
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); //delete the event if the user/owner of the event is deleted
             $table->timestamps();
         });
     }
